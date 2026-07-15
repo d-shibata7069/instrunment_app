@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:instrunment_app/component/flutter_map/packages.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:instrunment_app/component/flutter_map/packages.dart';
 
 final markerProvider = StateNotifierProvider<MarkerNotifier, List<Marker>>(
-    (ref) => MarkerNotifier());
+  (ref) => MarkerNotifier(),
+);
 
 // MapControllerのインスタンス作成
 final MapController mapController = MapController();
@@ -27,11 +28,7 @@ class MarkerNotifier extends StateNotifier<List<Marker>> {
           onLongPress: () {
             _showAlert(latlng, context);
           },
-          child: const Icon(
-            Icons.location_on,
-            color: Colors.blue,
-            size: 50,
-          ),
+          child: const Icon(Icons.location_on, color: Colors.blue, size: 50),
         ),
       ),
     ];

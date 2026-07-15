@@ -8,7 +8,7 @@ void main() {
   Uint8List datagram({
     String schema = FlightTelemetry.schema,
     int version = FlightTelemetry.schemaVersion,
-    double latitude = 35.8587,
+    double latitude = 35.0,
   }) {
     return Uint8List.fromList(
       utf8.encode(
@@ -19,7 +19,7 @@ void main() {
           'simulationTime_s': 12.5,
           'position': {
             'latitude_deg': latitude,
-            'longitude_deg': 139.5311,
+            'longitude_deg': 139.0,
             'altitude_m': 18.2,
             'groundLevel_m': 16.0,
           },
@@ -42,7 +42,7 @@ void main() {
     final frame = FlightTelemetry.fromDatagram(datagram());
 
     expect(frame.sequence, 42);
-    expect(frame.latitudeDegrees, 35.8587);
+    expect(frame.latitudeDegrees, 35.0);
     expect(frame.airspeedMetersPerSecond, 7.6);
     expect(frame.groundVelocityNorthMetersPerSecond, 7.0);
     expect(frame.pedalPowerWatts, 220.0);

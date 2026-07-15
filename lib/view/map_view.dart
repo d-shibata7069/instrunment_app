@@ -119,8 +119,7 @@ class _TelemetryStatus extends StatelessWidget {
     final status = telemetry.when(
       loading: () => 'UDP ${TelemetryReceiver.defaultPort} で待機中',
       error: (error, stackTrace) => '受信開始エラー',
-      data: (value) =>
-          isStale ? '通信停止（2秒以上受信なし）' : '受信中  #${value.sequence}',
+      data: (value) => isStale ? '通信停止（2秒以上受信なし）' : '受信中  #${value.sequence}',
     );
 
     return Card(

@@ -98,8 +98,7 @@ class FlightTelemetry {
       groundVelocityNorthMetersPerSecond: velocity[0],
       groundVelocityEastMetersPerSecond: velocity[1],
       groundVelocityDownMetersPerSecond: velocity[2],
-      pedalPowerWatts:
-          _asNumber(pedaling['power_W'], r'$.pedaling.power_W'),
+      pedalPowerWatts: _asNumber(pedaling['power_W'], r'$.pedaling.power_W'),
     );
   }
 

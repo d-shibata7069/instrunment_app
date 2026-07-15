@@ -13,6 +13,13 @@ final flightTelemetryProvider =
   yield* receiver.stream;
 });
 
+final telemetryClockProvider = StreamProvider.autoDispose<DateTime>(
+  (ref) => Stream<DateTime>.periodic(
+    const Duration(milliseconds: 500),
+    (tick) => DateTime.now(),
+  ),
+);
+
 final telemetryTrailProvider =
     StateNotifierProvider<TelemetryTrailNotifier, List<LatLng>>(
   (ref) => TelemetryTrailNotifier(),

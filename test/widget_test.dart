@@ -16,24 +16,23 @@ void main() {
           'schema': schema,
           'version': version,
           'sequence': 42,
-          'simTime_s': 12.5,
+          'simulationTime_s': 12.5,
           'position': {
             'latitude_deg': latitude,
             'longitude_deg': 139.5311,
             'altitude_m': 18.2,
+            'groundLevel_m': 16.0,
           },
           'attitude': {
             'roll_rad': 0.1,
             'pitch_rad': -0.2,
             'yaw_rad': 1.5,
           },
-          'airspeed_mps': 7.6,
-          'groundVelocityNED': {
-            'north_mps': 7.0,
-            'east_mps': 1.0,
-            'down_mps': 0.0,
+          'motion': {
+            'airspeed_mps': 7.6,
+            'groundVelocityNED_mps': [7.0, 1.0, 0.0],
           },
-          'pedalPower_W': 220.0,
+          'pedaling': {'power_W': 220.0},
         }),
       ),
     );
@@ -45,6 +44,7 @@ void main() {
     expect(frame.sequence, 42);
     expect(frame.latitudeDegrees, 35.8587);
     expect(frame.airspeedMetersPerSecond, 7.6);
+    expect(frame.groundVelocityNorthMetersPerSecond, 7.0);
     expect(frame.pedalPowerWatts, 220.0);
   });
 

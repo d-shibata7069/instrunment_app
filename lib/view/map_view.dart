@@ -18,6 +18,10 @@ class MyHomePage extends HookConsumerWidget {
     final telemetry = ref.watch(flightTelemetryProvider);
     final currentFrame = telemetry.whenOrNull(data: (frame) => frame);
     final trail = ref.watch(telemetryTrailProvider);
+    ref.watch(telemetryClockProvider);
+    final isStale = currentFrame != null &&
+        DateTime.now().difference(currentFrame.receivedAt) >
+            const Duration(seconds: 2);
 
     ref.listen<AsyncValue<FlightTelemetry>>(
       flightTelemetryProvider,
@@ -68,11 +72,11 @@ class MyHomePage extends HookConsumerWidget {
                       ),
                       child: Transform.rotate(
                         angle: currentFrame.yawRadians,
-                        child: const Icon(
+                        child: Icon(
                           Icons.navigation,
-                          color: Colors.deepOrange,
+                          color: isStale ? Colors.grey : Colors.deepOrange,
                           size: 42,
-                          shadows: [
+                          shadows: const [
                             Shadow(color: Colors.white, blurRadius: 4),
                           ],
                         ),
@@ -88,6 +92,7 @@ class MyHomePage extends HookConsumerWidget {
               child: _TelemetryStatus(
                 telemetry: telemetry,
                 frame: currentFrame,
+                isStale: isStale,
               ),
             ),
           ),
@@ -98,10 +103,15 @@ class MyHomePage extends HookConsumerWidget {
 }
 
 class _TelemetryStatus extends StatelessWidget {
-  const _TelemetryStatus({required this.telemetry, required this.frame});
+  const _TelemetryStatus({
+    required this.telemetry,
+    required this.frame,
+    required this.isStale,
+  });
 
   final AsyncValue<FlightTelemetry> telemetry;
   final FlightTelemetry? frame;
+  final bool isStale;
 
   @override
   Widget build(BuildContext context) {
@@ -109,7 +119,8 @@ class _TelemetryStatus extends StatelessWidget {
     final status = telemetry.when(
       loading: () => 'UDP ${TelemetryReceiver.defaultPort} で待機中',
       error: (error, stackTrace) => '受信開始エラー',
-      data: (value) => '受信中  #${value.sequence}',
+      data: (value) =>
+          isStale ? '通信停止（2秒以上受信なし）' : '受信中  #${value.sequence}',
     );
 
     return Card(

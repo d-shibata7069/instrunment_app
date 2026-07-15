@@ -26,7 +26,16 @@ class MyHomePage extends HookConsumerWidget {
     ref.listen<AsyncValue<FlightTelemetry>>(
       flightTelemetryProvider,
       (previous, next) {
-        next.whenData(ref.read(telemetryTrailProvider.notifier).add);
+        next.whenData((frame) {
+          final existingTrail = ref.read(telemetryTrailProvider);
+          ref.read(telemetryTrailProvider.notifier).add(frame);
+          if (existingTrail.isEmpty) {
+            mapController.move(
+              LatLng(frame.latitudeDegrees, frame.longitudeDegrees),
+              14,
+            );
+          }
+        });
       },
     );
 
@@ -47,6 +56,7 @@ class MyHomePage extends HookConsumerWidget {
               TileLayer(
                 urlTemplate:
                     'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                userAgentPackageName: 'WASAFEE/instrunment_app',
               ),
               MarkerLayer(markers: createInitialMarkers(context)),
               MarkerLayer(markers: markers),
@@ -98,6 +108,21 @@ class MyHomePage extends HookConsumerWidget {
           ),
         ],
       ),
+      floatingActionButton: currentFrame == null
+          ? null
+          : FloatingActionButton.small(
+              onPressed: () {
+                mapController.move(
+                  LatLng(
+                    currentFrame.latitudeDegrees,
+                    currentFrame.longitudeDegrees,
+                  ),
+                  mapController.camera.zoom,
+                );
+              },
+              tooltip: '現在位置へ移動',
+              child: const Icon(Icons.my_location),
+            ),
     );
   }
 }

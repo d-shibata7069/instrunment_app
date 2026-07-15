@@ -23,11 +23,7 @@ List<Marker> createInitialMarkers(BuildContext context) {
             ],
           ),
         ),
-        child: Icon(
-          Icons.circle,
-          color: Colors.red,
-          size: 20,
-        ),
+        child: Icon(Icons.circle, color: Colors.red, size: 20),
       ),
     ),
   ];

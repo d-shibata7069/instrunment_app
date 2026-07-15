@@ -23,11 +23,7 @@ void main() {
             'altitude_m': 18.2,
             'groundLevel_m': 16.0,
           },
-          'attitude': {
-            'roll_rad': 0.1,
-            'pitch_rad': -0.2,
-            'yaw_rad': 1.5,
-          },
+          'attitude': {'roll_rad': 0.1, 'pitch_rad': -0.2, 'yaw_rad': 1.5},
           'motion': {
             'airspeed_mps': 7.6,
             'groundVelocityNED_mps': [7.0, 1.0, 0.0],

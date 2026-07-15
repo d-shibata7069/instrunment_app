@@ -4,8 +4,9 @@ import 'package:latlong2/latlong.dart';
 import '../telemetry/flight_telemetry.dart';
 import '../telemetry/telemetry_receiver.dart';
 
-final flightTelemetryProvider =
-    StreamProvider.autoDispose<FlightTelemetry>((ref) async* {
+final flightTelemetryProvider = StreamProvider.autoDispose<FlightTelemetry>((
+  ref,
+) async* {
   final receiver = TelemetryReceiver();
   ref.onDispose(receiver.dispose);
 
@@ -22,8 +23,8 @@ final telemetryClockProvider = StreamProvider.autoDispose<DateTime>(
 
 final telemetryTrailProvider =
     StateNotifierProvider<TelemetryTrailNotifier, List<LatLng>>(
-  (ref) => TelemetryTrailNotifier(),
-);
+      (ref) => TelemetryTrailNotifier(),
+    );
 
 class TelemetryTrailNotifier extends StateNotifier<List<LatLng>> {
   TelemetryTrailNotifier() : super(const []);

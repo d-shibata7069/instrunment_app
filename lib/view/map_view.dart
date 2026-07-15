@@ -19,25 +19,26 @@ class MyHomePage extends HookConsumerWidget {
     final currentFrame = telemetry.whenOrNull(data: (frame) => frame);
     final trail = ref.watch(telemetryTrailProvider);
     ref.watch(telemetryClockProvider);
-    final isStale = currentFrame != null &&
+    final isStale =
+        currentFrame != null &&
         DateTime.now().difference(currentFrame.receivedAt) >
             const Duration(seconds: 2);
 
-    ref.listen<AsyncValue<FlightTelemetry>>(
-      flightTelemetryProvider,
-      (previous, next) {
-        next.whenData((frame) {
-          final existingTrail = ref.read(telemetryTrailProvider);
-          ref.read(telemetryTrailProvider.notifier).add(frame);
-          if (existingTrail.isEmpty) {
-            mapController.move(
-              LatLng(frame.latitudeDegrees, frame.longitudeDegrees),
-              14,
-            );
-          }
-        });
-      },
-    );
+    ref.listen<AsyncValue<FlightTelemetry>>(flightTelemetryProvider, (
+      previous,
+      next,
+    ) {
+      next.whenData((frame) {
+        final existingTrail = ref.read(telemetryTrailProvider);
+        ref.read(telemetryTrailProvider.notifier).add(frame);
+        if (existingTrail.isEmpty) {
+          mapController.move(
+            LatLng(frame.latitudeDegrees, frame.longitudeDegrees),
+            14,
+          );
+        }
+      });
+    });
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -169,9 +170,7 @@ class _TelemetryStatus extends StatelessWidget {
                   '対気速度 '
                   '${frame!.airspeedMetersPerSecond.toStringAsFixed(1)} m/s',
                 ),
-                Text(
-                  'ペダル出力 ${frame!.pedalPowerWatts.toStringAsFixed(0)} W',
-                ),
+                Text('ペダル出力 ${frame!.pedalPowerWatts.toStringAsFixed(0)} W'),
               ],
             ],
           ),

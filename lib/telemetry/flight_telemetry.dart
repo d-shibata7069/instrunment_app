@@ -68,10 +68,14 @@ class FlightTelemetry {
       r'$.motion.groundVelocityNED_mps',
     );
 
-    final latitude =
-        _asNumber(position['latitude_deg'], r'$.position.latitude_deg');
-    final longitude =
-        _asNumber(position['longitude_deg'], r'$.position.longitude_deg');
+    final latitude = _asNumber(
+      position['latitude_deg'],
+      r'$.position.latitude_deg',
+    );
+    final longitude = _asNumber(
+      position['longitude_deg'],
+      r'$.position.longitude_deg',
+    );
     if (latitude < -90 || latitude > 90) {
       throw const FormatException('Latitude is outside -90..90 degrees.');
     }
@@ -82,19 +86,27 @@ class FlightTelemetry {
     return FlightTelemetry(
       receivedAt: DateTime.now(),
       sequence: _asInteger(json['sequence'], r'$.sequence'),
-      simulationTimeSeconds:
-          _asNumber(json['simulationTime_s'], r'$.simulationTime_s'),
+      simulationTimeSeconds: _asNumber(
+        json['simulationTime_s'],
+        r'$.simulationTime_s',
+      ),
       latitudeDegrees: latitude,
       longitudeDegrees: longitude,
-      altitudeMeters:
-          _asNumber(position['altitude_m'], r'$.position.altitude_m'),
-      groundLevelMeters:
-          _asNumber(position['groundLevel_m'], r'$.position.groundLevel_m'),
+      altitudeMeters: _asNumber(
+        position['altitude_m'],
+        r'$.position.altitude_m',
+      ),
+      groundLevelMeters: _asNumber(
+        position['groundLevel_m'],
+        r'$.position.groundLevel_m',
+      ),
       rollRadians: _asNumber(attitude['roll_rad'], r'$.attitude.roll_rad'),
       pitchRadians: _asNumber(attitude['pitch_rad'], r'$.attitude.pitch_rad'),
       yawRadians: _asNumber(attitude['yaw_rad'], r'$.attitude.yaw_rad'),
-      airspeedMetersPerSecond:
-          _asNumber(motion['airspeed_mps'], r'$.motion.airspeed_mps'),
+      airspeedMetersPerSecond: _asNumber(
+        motion['airspeed_mps'],
+        r'$.motion.airspeed_mps',
+      ),
       groundVelocityNorthMetersPerSecond: velocity[0],
       groundVelocityEastMetersPerSecond: velocity[1],
       groundVelocityDownMetersPerSecond: velocity[2],

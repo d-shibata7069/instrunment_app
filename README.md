@@ -13,6 +13,10 @@ Flight Environment Emulator（FEE）が送る飛行状態を、別の端末の�
 
 この公開リポジトリには表示に必要な通信形式だけを置きます。FEE本体、機体形状、空力データ、チーム内IPアドレス、認証情報は置きません。
 
+## 確認環境
+
+GitHub Actionsでは2026-07-15にFlutter 3.44.6でformat、analyze、testを確認しています。これは再現用のCI基準版です。新しいFlutter stableを使う場合は、同じ3検査を通し、動作確認日と版をPRへ記録してください。端末とFEEを組み合わせた実機確認はDraft PRの未完了項目です。
+
 ## 初めて使う人へ
 
 1. [Flutter公式手順](https://docs.flutter.dev/get-started/install)でFlutter stableをインストールします。

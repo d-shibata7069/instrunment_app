@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:instrunment_app/component/flutter_map/packages.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:instrunment_app/component/flutter_map/packages.dart';
 
 final markerProvider = StateNotifierProvider<MarkerNotifier, List<Marker>>(
     (ref) => MarkerNotifier());

@@ -2,6 +2,9 @@
 
 Flight Environment Emulator（FEE）が送る飛行状態を、別の端末の地図上に表示するFlutterアプリです。リポジトリ名の `instrunment_app` は既存名のため維持しています。
 
+> [!NOTE]
+> `develop`ブランチのREADMEは、[FlightEnvironmentEmulator Guide](https://flight-environment-emulator-guide.makotoyoshida.chatgpt.site/software/instrument-display)へ自動反映されます。反映は通常1分以内です。
+
 ## UI
 
 ![WASA FEE Instrument DisplayのUI](docs/images/instrument-display-ui.png)

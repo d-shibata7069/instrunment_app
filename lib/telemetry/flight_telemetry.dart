@@ -19,6 +19,7 @@ class FlightTelemetry {
     required this.groundVelocityEastMetersPerSecond,
     required this.groundVelocityDownMetersPerSecond,
     required this.pedalPowerWatts,
+    this.pedalCadenceRpm,
   });
 
   static const String schema = 'wasafee.flight-telemetry';
@@ -40,6 +41,7 @@ class FlightTelemetry {
   final double groundVelocityEastMetersPerSecond;
   final double groundVelocityDownMetersPerSecond;
   final double pedalPowerWatts;
+  final double? pedalCadenceRpm;
 
   static FlightTelemetry fromDatagram(Uint8List bytes) {
     final Object? decoded;
@@ -111,6 +113,10 @@ class FlightTelemetry {
       groundVelocityEastMetersPerSecond: velocity[1],
       groundVelocityDownMetersPerSecond: velocity[2],
       pedalPowerWatts: _asNumber(pedaling['power_W'], r'$.pedaling.power_W'),
+      pedalCadenceRpm: _asOptionalNumber(
+        pedaling['cadence_rpm'],
+        r'$.pedaling.cadence_rpm',
+      ),
     );
   }
 
@@ -141,6 +147,10 @@ class FlightTelemetry {
       throw FormatException('$path must be finite.');
     }
     return result;
+  }
+
+  static double? _asOptionalNumber(Object? value, String path) {
+    return value == null ? null : _asNumber(value, path);
   }
 
   static int _asInteger(Object? value, String path) {

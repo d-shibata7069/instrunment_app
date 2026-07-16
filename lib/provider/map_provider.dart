@@ -1,96 +1,42 @@
-import 'package:flutter/material.dart';
-import 'package:instrunment_app/component/flutter_map/packages.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:instrunment_app/component/flutter_map/packages.dart';
+import 'package:instrunment_app/model/navigation_point.dart';
 
-final markerProvider = StateNotifierProvider<MarkerNotifier, List<Marker>>(
-    (ref) => MarkerNotifier());
+final navigationPointProvider =
+    StateNotifierProvider<NavigationPointNotifier, NavigationPointState>(
+      (ref) => NavigationPointNotifier(),
+    );
 
-// MapControllerのインスタンス作成
-final MapController mapController = MapController();
+final mapController = MapController();
 
-class MarkerNotifier extends StateNotifier<List<Marker>> {
-  MarkerNotifier() : super([]);
+class NavigationPointNotifier extends StateNotifier<NavigationPointState> {
+  NavigationPointNotifier() : super(const NavigationPointState());
 
-  void addMarker(LatLng latlng, BuildContext context) {
-    // markersリストを毎回作り直さないと状態が更新されない
-    state = [
-      ...state,
-      Marker(
-        width: 30.0,
-        height: 50.0,
-        point: latlng,
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            mapController.move(latlng, mapController.camera.zoom);
-          },
-          onLongPress: () {
-            _showAlert(latlng, context);
-          },
-          child: const Icon(
-            Icons.location_on,
-            color: Colors.blue,
-            size: 50,
-          ),
-        ),
-      ),
-    ];
+  int _nextNumber = 1;
+
+  NavigationPoint add(LatLng position) {
+    final number = _nextNumber++;
+    final point = NavigationPoint(
+      id: 'navigation-$number',
+      label: '#${number.toString().padLeft(2, '0')}',
+      position: position,
+    );
+    state = NavigationPointState(
+      points: List.unmodifiable([...state.points, point]),
+      selectedId: point.id,
+    );
+    return point;
   }
 
-  void _showAlert(LatLng latlng, BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('ピンの位置'),
-        content: Text('緯度: ${latlng.latitude}, 経度: ${latlng.longitude}'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('閉じる'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
+  void select(String id) {
+    if (!state.points.any((point) => point.id == id)) {
+      return;
+    }
+    state = NavigationPointState(points: state.points, selectedId: id);
+  }
+
+  void clear() {
+    _nextNumber = 1;
+    state = const NavigationPointState();
   }
 }
-
-// class MarkerWidget extends StatefulWidget {
-//   @override
-//   _MarkerWidgetState createState() => _MarkerWidgetState();
-// }
-
-// class _MarkerWidgetState extends State<MarkerWidget>
-//     with TickerProviderStateMixin {
-//   late final AnimatedMapController _animatedMapController;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _animatedMapController = AnimatedMapController(vsync: this);
-//   }
-
-//   void addMarker(LatLng latlng) {
-//     final marker = Marker(
-//       width: 30.0,
-//       height: 30.0,
-//       point: latlng,
-//       child: GestureDetector(
-//         onTap: () {
-//           _animatedMapController.animateTo(dest: latlng);
-//         },
-//         child: const Icon(
-//           Icons.location_on,
-//           color: Colors.blue,
-//           size: 50,
-//         ),
-//       ),
-//     );
-
-//     context.read(markerProvider.notifier).addMarker(marker);
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(); // 実際のUIをここに構築します
-//   }
-// }

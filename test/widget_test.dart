@@ -9,6 +9,7 @@ void main() {
     String schema = FlightTelemetry.schema,
     int version = FlightTelemetry.schemaVersion,
     double latitude = 35.0,
+    double? cadenceRpm,
   }) {
     return Uint8List.fromList(
       utf8.encode(
@@ -28,7 +29,10 @@ void main() {
             'airspeed_mps': 7.6,
             'groundVelocityNED_mps': [7.0, 1.0, 0.0],
           },
-          'pedaling': {'power_W': 220.0},
+          'pedaling': {
+            'power_W': 220.0,
+            if (cadenceRpm != null) 'cadence_rpm': cadenceRpm,
+          },
         }),
       ),
     );
@@ -42,6 +46,13 @@ void main() {
     expect(frame.airspeedMetersPerSecond, 7.6);
     expect(frame.groundVelocityNorthMetersPerSecond, 7.0);
     expect(frame.pedalPowerWatts, 220.0);
+    expect(frame.pedalCadenceRpm, isNull);
+  });
+
+  test('parses optional pedal cadence without changing schema version', () {
+    final frame = FlightTelemetry.fromDatagram(datagram(cadenceRpm: 87));
+
+    expect(frame.pedalCadenceRpm, 87);
   });
 
   test('rejects an unknown schema version', () {

@@ -6,11 +6,15 @@ Flight Environment Emulator（FEE）が送る飛行状態を、別の端末の�
 
 ![WASA FEE Instrument DisplayのUI](docs/images/instrument-display-ui.png)
 
-デモ用テレメトリを使ってレンダリングした画面です。地図データ: [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright)
+デモ用テレメトリを使ってレンダリングした画面です。地図は操作表示と競合しない低彩度表示にしています。地図データ: [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright)
+
+画面構成と操作の詳細は[統合計器盤 UI要件](docs/ui-requirements.md)を参照してください。
 
 ## できること
 
 - UDPで受信した現在位置・機首方位を地図に表示
+- 自機を中央・機首方向を上に保つ統合計器盤を表示
+- ナビポイントの追加・選択と残距離の表示
 - 最大600点の飛行軌跡を表示
 - 高度、対気速度、ペダル出力を単位付きで表示
 - 2秒以上受信が途切れた場合に「通信停止」と表示

@@ -2,18 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:instrunment_app/telemetry/flight_telemetry.dart';
-
-class InstrumentPalette {
-  static const background = Color(0xFF07131F);
-  static const navy = Color(0xFF073B70);
-  static const blue = Color(0xFF087DB8);
-  static const cyan = Color(0xFF35B9E8);
-  static const green = Color(0xFF79B83A);
-  static const warning = Color(0xFFE5A500);
-  static const danger = Color(0xFFD94A43);
-  static const ink = Color(0xFF123247);
-  static const glass = Color(0xEAF7FBFD);
-}
+import 'package:instrunment_app/theme/instrument_palette.dart';
 
 class InstrumentPanel extends StatelessWidget {
   const InstrumentPanel({
@@ -57,13 +46,13 @@ class InstrumentPanel extends StatelessWidget {
                   )
                   .toDouble();
         final activeColor = isStale || currentFrame == null
-            ? Colors.blueGrey
-            : InstrumentPalette.blue;
+            ? InstrumentPalette.inactive
+            : InstrumentPalette.accent;
 
         return DecoratedBox(
           decoration: BoxDecoration(
             color: InstrumentPalette.background,
-            border: Border.all(color: const Color(0xFF41647A)),
+            border: Border.all(color: InstrumentPalette.line),
           ),
           child: ClipRect(
             child: Stack(
@@ -120,8 +109,8 @@ class InstrumentPanel extends StatelessWidget {
                       child: CustomPaint(
                         painter: _AircraftReticlePainter(
                           color: isStale
-                              ? Colors.blueGrey
-                              : InstrumentPalette.blue,
+                              ? InstrumentPalette.inactive
+                              : InstrumentPalette.accent,
                         ),
                       ),
                     ),
@@ -171,11 +160,11 @@ class _HeaderOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusColor = isStale
+    final statusColor = isStale || status == 'RX ERROR'
         ? InstrumentPalette.danger
         : frame == null
-        ? Colors.blueGrey
-        : InstrumentPalette.green;
+        ? InstrumentPalette.inactive
+        : InstrumentPalette.accent;
     final headingDegrees = frame == null
         ? null
         : ((frame!.yawRadians * 180 / math.pi + 360) % 360).round() % 360;
@@ -183,13 +172,11 @@ class _HeaderOverlay extends StatelessWidget {
     return DecoratedBox(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFFF9FCFD), Color(0xE8E8F3F8)],
+          colors: [InstrumentPalette.surface, InstrumentPalette.surfaceMuted],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
-        border: Border(
-          bottom: BorderSide(color: InstrumentPalette.blue, width: 2),
-        ),
+        border: Border(bottom: BorderSide(color: InstrumentPalette.line)),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 6, 8, 5),
@@ -215,7 +202,7 @@ class _HeaderOverlay extends StatelessWidget {
                         const Text(
                           'HDG',
                           style: TextStyle(
-                            color: InstrumentPalette.blue,
+                            color: InstrumentPalette.textSecondary,
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                           ),
@@ -225,7 +212,7 @@ class _HeaderOverlay extends StatelessWidget {
                               ? '---°'
                               : '${headingDegrees.toString().padLeft(3, '0')}°',
                           style: const TextStyle(
-                            color: InstrumentPalette.ink,
+                            color: InstrumentPalette.textPrimary,
                             fontSize: 15,
                             fontWeight: FontWeight.w800,
                           ),
@@ -256,23 +243,36 @@ class _StatusChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: const BoxConstraints(maxWidth: 92),
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 5),
+      constraints: const BoxConstraints(maxWidth: 108),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.14),
-        border: Border.all(color: color),
-        borderRadius: BorderRadius.circular(4),
+        color: InstrumentPalette.surfaceRaised,
+        border: Border.all(color: InstrumentPalette.line),
+        borderRadius: BorderRadius.circular(999),
       ),
-      child: Text(
-        label,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
-        style: TextStyle(
-          color: color,
-          fontSize: 10,
-          fontWeight: FontWeight.w800,
-          letterSpacing: 0.2,
-        ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              label,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                color: InstrumentPalette.textPrimary,
+                fontSize: 10,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 0.35,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -302,7 +302,7 @@ class _AttitudeRibbon extends StatelessWidget {
             child: Divider(
               height: 2,
               thickness: 2,
-              color: InstrumentPalette.danger,
+              color: InstrumentPalette.textSecondary,
             ),
           ),
         ),
@@ -316,14 +316,14 @@ class _AttitudeRibbon extends StatelessWidget {
                 Icon(
                   Icons.arrow_right,
                   size: 17,
-                  color: InstrumentPalette.blue,
+                  color: InstrumentPalette.accent,
                 ),
                 SizedBox(
                   width: 62,
                   child: Divider(
                     height: 2,
                     thickness: 2,
-                    color: InstrumentPalette.blue,
+                    color: InstrumentPalette.accent,
                   ),
                 ),
                 SizedBox(width: 14),
@@ -332,10 +332,14 @@ class _AttitudeRibbon extends StatelessWidget {
                   child: Divider(
                     height: 2,
                     thickness: 2,
-                    color: InstrumentPalette.blue,
+                    color: InstrumentPalette.accent,
                   ),
                 ),
-                Icon(Icons.arrow_left, size: 17, color: InstrumentPalette.blue),
+                Icon(
+                  Icons.arrow_left,
+                  size: 17,
+                  color: InstrumentPalette.accent,
+                ),
               ],
             ),
           ),
@@ -344,12 +348,15 @@ class _AttitudeRibbon extends StatelessWidget {
           bottom: 0,
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-            color: const Color(0xDCF7FBFD),
+            decoration: BoxDecoration(
+              color: InstrumentPalette.surfaceRaised,
+              borderRadius: BorderRadius.circular(3),
+            ),
             child: Text(
               'ROLL ${(rollRadians * 180 / math.pi).toStringAsFixed(1)}°   '
               'PITCH ${pitchDegrees.toStringAsFixed(1)}°',
               style: const TextStyle(
-                color: InstrumentPalette.ink,
+                color: InstrumentPalette.textSecondary,
                 fontSize: 9,
                 fontWeight: FontWeight.w700,
               ),
@@ -377,8 +384,8 @@ class _NavigationReadout extends StatelessWidget {
       height: 23,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: const BoxDecoration(
-        color: Color(0x12087DB8),
-        border: Border(top: BorderSide(color: Color(0x33087DB8))),
+        color: InstrumentPalette.surfaceMuted,
+        border: Border(top: BorderSide(color: InstrumentPalette.lineSoft)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -386,7 +393,7 @@ class _NavigationReadout extends StatelessWidget {
           const Text(
             'NAV',
             style: TextStyle(
-              color: InstrumentPalette.blue,
+              color: InstrumentPalette.accent,
               fontSize: 10,
               fontWeight: FontWeight.w900,
             ),
@@ -398,8 +405,8 @@ class _NavigationReadout extends StatelessWidget {
                 : 'タップで追加・長押しで選択',
             style: TextStyle(
               color: hasSelection
-                  ? InstrumentPalette.ink
-                  : Colors.blueGrey.shade600,
+                  ? InstrumentPalette.textPrimary
+                  : InstrumentPalette.textSecondary,
               fontSize: 11,
               fontWeight: FontWeight.w700,
             ),
@@ -466,15 +473,15 @@ class _VerticalTapePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     canvas.drawRect(
       Offset.zero & size,
-      Paint()..color = InstrumentPalette.glass,
+      Paint()..color = InstrumentPalette.surface,
     );
     final axisX = leftSide ? size.width - 3 : 3.0;
     canvas.drawLine(
       Offset(axisX, 0),
       Offset(axisX, size.height),
       Paint()
-        ..color = InstrumentPalette.blue
-        ..strokeWidth = 2,
+        ..color = InstrumentPalette.line
+        ..strokeWidth = 1,
     );
 
     _drawText(
@@ -482,7 +489,7 @@ class _VerticalTapePainter extends CustomPainter {
       '$label\n$unit',
       Offset(leftSide ? 5 : 9, 8),
       const TextStyle(
-        color: InstrumentPalette.blue,
+        color: InstrumentPalette.textSecondary,
         fontSize: 10,
         fontWeight: FontWeight.w800,
         height: 1.15,
@@ -508,7 +515,9 @@ class _VerticalTapePainter extends CustomPainter {
         Offset(fromX, y),
         Offset(toX, y),
         Paint()
-          ..color = isMajor ? InstrumentPalette.danger : InstrumentPalette.blue
+          ..color = isMajor
+              ? InstrumentPalette.textSecondary
+              : InstrumentPalette.line
           ..strokeWidth = isMajor ? 2 : 1,
       );
       if (isMajor && offset != 0) {
@@ -518,7 +527,7 @@ class _VerticalTapePainter extends CustomPainter {
           text,
           Offset(leftSide ? 5 : 20, y - 7),
           const TextStyle(
-            color: InstrumentPalette.ink,
+            color: InstrumentPalette.textSecondary,
             fontSize: 9,
             fontWeight: FontWeight.w600,
           ),
@@ -550,7 +559,7 @@ class _VerticalTapePainter extends CustomPainter {
       value.toStringAsFixed(value >= 10 ? 0 : 1),
       Offset(size.width / 2, centerY),
       const TextStyle(
-        color: Colors.white,
+        color: InstrumentPalette.background,
         fontSize: 14,
         fontWeight: FontWeight.w900,
       ),
@@ -651,10 +660,8 @@ class _PedalingGauge extends StatelessWidget {
 
     return DecoratedBox(
       decoration: const BoxDecoration(
-        color: Color(0xF2073B70),
-        border: Border(
-          top: BorderSide(color: InstrumentPalette.cyan, width: 2),
-        ),
+        color: InstrumentPalette.surface,
+        border: Border(top: BorderSide(color: InstrumentPalette.line)),
       ),
       child: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 7),
@@ -669,7 +676,7 @@ class _PedalingGauge extends StatelessWidget {
                   Text(
                     label,
                     style: const TextStyle(
-                      color: Color(0xFF9FDDF4),
+                      color: InstrumentPalette.textSecondary,
                       fontSize: 10,
                       fontWeight: FontWeight.w800,
                     ),
@@ -677,7 +684,7 @@ class _PedalingGauge extends StatelessWidget {
                   Text(
                     '${value.toStringAsFixed(0)} $unit',
                     style: const TextStyle(
-                      color: Colors.white,
+                      color: InstrumentPalette.textPrimary,
                       fontSize: 17,
                       fontWeight: FontWeight.w900,
                     ),
@@ -694,9 +701,9 @@ class _PedalingGauge extends StatelessWidget {
                     child: LinearProgressIndicator(
                       value: fraction,
                       minHeight: 9,
-                      backgroundColor: const Color(0xFF325B7D),
+                      backgroundColor: InstrumentPalette.surfaceRaised,
                       valueColor: const AlwaysStoppedAnimation<Color>(
-                        InstrumentPalette.cyan,
+                        InstrumentPalette.accent,
                       ),
                     ),
                   ),
@@ -706,13 +713,16 @@ class _PedalingGauge extends StatelessWidget {
                     children: [
                       const Text(
                         '0',
-                        style: TextStyle(color: Colors.white70, fontSize: 9),
+                        style: TextStyle(
+                          color: InstrumentPalette.textSecondary,
+                          fontSize: 9,
+                        ),
                       ),
                       if (cadence != null)
                         Text(
                           '${frame!.pedalPowerWatts.toStringAsFixed(0)} W',
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: InstrumentPalette.textPrimary,
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
                           ),
@@ -720,7 +730,7 @@ class _PedalingGauge extends StatelessWidget {
                       Text(
                         maximum.toStringAsFixed(0),
                         style: const TextStyle(
-                          color: Colors.white70,
+                          color: InstrumentPalette.textSecondary,
                           fontSize: 9,
                         ),
                       ),
@@ -743,14 +753,15 @@ class _MapAttribution extends StatelessWidget {
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.78),
-        borderRadius: BorderRadius.circular(2),
+        color: InstrumentPalette.surface.withValues(alpha: 0.82),
+        border: Border.all(color: InstrumentPalette.lineSoft),
+        borderRadius: BorderRadius.circular(4),
       ),
       child: const Padding(
         padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         child: Text(
           '© OpenStreetMap contributors',
-          style: TextStyle(color: InstrumentPalette.ink, fontSize: 8),
+          style: TextStyle(color: InstrumentPalette.textSecondary, fontSize: 8),
         ),
       ),
     );
@@ -765,9 +776,9 @@ class _RecenterButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: const Color(0xEEFFFFFF),
+      color: InstrumentPalette.surface,
       shape: const CircleBorder(
-        side: BorderSide(color: InstrumentPalette.blue),
+        side: BorderSide(color: InstrumentPalette.line),
       ),
       child: InkWell(
         customBorder: const CircleBorder(),
@@ -777,7 +788,7 @@ class _RecenterButton extends StatelessWidget {
           height: 42,
           child: Icon(
             Icons.my_location,
-            color: InstrumentPalette.blue,
+            color: InstrumentPalette.accent,
             size: 22,
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:instrunment_app/telemetry/flight_telemetry.dart';
+import 'package:instrunment_app/theme/instrument_palette.dart';
 import 'package:instrunment_app/view/instrument_panel.dart';
 
 void main() {
@@ -35,7 +36,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: InstrumentPanel(
-            map: const ColoredBox(color: Color(0xFFD9E6EA)),
+            map: const ColoredBox(color: InstrumentPalette.mapBackground),
             frame: frame(),
             status: 'LIVE #1842',
             isStale: false,
@@ -65,7 +66,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: InstrumentPanel(
-            map: const ColoredBox(color: Color(0xFFD9E6EA)),
+            map: const ColoredBox(color: InstrumentPalette.mapBackground),
             frame: frame(cadenceRpm: null),
             status: 'LIVE #1842',
             isStale: false,
@@ -89,7 +90,7 @@ void main() {
       MaterialApp(
         home: Scaffold(
           body: InstrumentPanel(
-            map: const ColoredBox(color: Color(0xFFD9E6EA)),
+            map: const ColoredBox(color: InstrumentPalette.mapBackground),
             frame: frame(),
             status: 'LIVE #1842',
             isStale: false,

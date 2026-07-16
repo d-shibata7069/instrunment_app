@@ -6,7 +6,7 @@ Flight Environment Emulator（FEE）が送る飛行状態を、別の端末の�
 
 ![WASA FEE Instrument DisplayのUI](docs/images/instrument-display-ui.png)
 
-デモ用テレメトリを使ってレンダリングした画面です。地図データ: [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright)
+デモ用テレメトリを使ってレンダリングした画面です。地図は操作表示と競合しない低彩度表示にしています。地図データ: [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright)
 
 画面構成と操作の詳細は[統合計器盤 UI要件](docs/ui-requirements.md)を参照してください。
 

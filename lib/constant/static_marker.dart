@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:instrunment_app/component/flutter_map/packages.dart';
+import 'package:instrunment_app/theme/instrument_palette.dart';
 
 // 地図に初めから表示しておくマーカーを定義
 List<Marker> createInitialMarkers(BuildContext context) {
@@ -23,7 +24,11 @@ List<Marker> createInitialMarkers(BuildContext context) {
             ],
           ),
         ),
-        child: Icon(Icons.circle, color: Colors.red, size: 20),
+        child: const Icon(
+          Icons.circle,
+          color: InstrumentPalette.mapInk,
+          size: 14,
+        ),
       ),
     ),
   ];

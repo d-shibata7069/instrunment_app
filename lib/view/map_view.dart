@@ -8,6 +8,7 @@ import 'package:instrunment_app/provider/map_provider.dart';
 import 'package:instrunment_app/provider/telemetry_provider.dart';
 import 'package:instrunment_app/telemetry/flight_telemetry.dart';
 import 'package:instrunment_app/telemetry/telemetry_receiver.dart';
+import 'package:instrunment_app/theme/instrument_palette.dart';
 import 'package:instrunment_app/view/instrument_panel.dart';
 
 class MyHomePage extends HookConsumerWidget {
@@ -80,16 +81,22 @@ class MyHomePage extends HookConsumerWidget {
                     options: MapOptions(
                       initialCenter: const LatLng(35.170915, 136.881537),
                       initialZoom: 10,
-                      backgroundColor: const Color(0xFFD9E6EA),
+                      backgroundColor: InstrumentPalette.mapBackground,
                       onTap: (tapPosition, point) {
                         ref.read(navigationPointProvider.notifier).add(point);
                       },
                     ),
                     children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'WASAFEE/instrunment_app',
+                      ColorFiltered(
+                        colorFilter: InstrumentPalette.monochromeMapFilter,
+                        child: Opacity(
+                          opacity: 0.64,
+                          child: TileLayer(
+                            urlTemplate:
+                                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'WASAFEE/instrunment_app',
+                          ),
+                        ),
                       ),
                       MarkerLayer(
                         rotate: true,
@@ -105,7 +112,7 @@ class MyHomePage extends HookConsumerWidget {
                                 selectedNavigationPoint.position,
                               ],
                               strokeWidth: 2,
-                              color: InstrumentPalette.blue,
+                              color: InstrumentPalette.accent,
                               isDotted: true,
                             ),
                           ],
@@ -116,7 +123,9 @@ class MyHomePage extends HookConsumerWidget {
                             Polyline(
                               points: trail,
                               strokeWidth: 3,
-                              color: InstrumentPalette.blue,
+                              color: InstrumentPalette.accent.withValues(
+                                alpha: 0.68,
+                              ),
                             ),
                           ],
                         ),
@@ -172,7 +181,9 @@ class _NavigationPointMarker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? InstrumentPalette.blue : InstrumentPalette.green;
+    final color = selected
+        ? InstrumentPalette.accent
+        : InstrumentPalette.mapInk;
     return Semantics(
       button: true,
       selected: selected,
@@ -187,14 +198,18 @@ class _NavigationPointMarker extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.9),
-                border: Border.all(color: color),
-                borderRadius: BorderRadius.circular(3),
+                color: InstrumentPalette.surface.withValues(alpha: 0.92),
+                border: Border.all(
+                  color: selected ? color : InstrumentPalette.line,
+                ),
+                borderRadius: BorderRadius.circular(999),
               ),
               child: Text(
                 label,
                 style: TextStyle(
-                  color: color,
+                  color: selected
+                      ? InstrumentPalette.accent
+                      : InstrumentPalette.textSecondary,
                   fontSize: 10,
                   fontWeight: FontWeight.w900,
                 ),
@@ -204,7 +219,9 @@ class _NavigationPointMarker extends StatelessWidget {
               Icons.navigation,
               color: color,
               size: selected ? 27 : 22,
-              shadows: const [Shadow(color: Colors.white, blurRadius: 3)],
+              shadows: const [
+                Shadow(color: InstrumentPalette.background, blurRadius: 4),
+              ],
             ),
           ],
         ),

@@ -2,6 +2,12 @@
 
 Flight Environment Emulator（FEE）が送る飛行状態を、別の端末の地図上に表示するFlutterアプリです。リポジトリ名の `instrunment_app` は既存名のため維持しています。
 
+## UI
+
+![WASA FEE Instrument DisplayのUI](docs/images/instrument-display-ui.png)
+
+デモ用テレメトリを使ってレンダリングした画面です。地図データ: [© OpenStreetMap contributors](https://www.openstreetmap.org/copyright)
+
 ## できること
 
 - UDPで受信した現在位置・機首方位を地図に表示
